@@ -60,3 +60,12 @@ Un solo código, dos sitios en Vercel. Cada uno tiene su propia base de datos en
 
 - Las fotos originales pesadas (PNG de 3 MB y un JPG de 5.7 MB en `public/`) y la carpeta `design/` con los maestros del logo quedaron fuera del commit para no engordar el repositorio. Las versiones livianas ya están dentro (`hero-avenida.jpg`, `esquina-atardecer.jpg`, etc. y `public/brand/`).
 - Si en tu base de producción existen los mismos registros de prueba que tenías en la local (Pepe Saez, Alberto Forty, Pedro Alvares y los lugares "Pedro" y "Parque Sarmiento"), repetí allá el cambio de sus fotos: en la base local ya se reemplazaron, en la real de producción no. Además, la caché de imágenes de Vercel puede conservar copias de esas fotos aunque Cloudinary ya no las tenga; después de corregir la base, purgá esa caché desde el panel de Vercel (Settings > Data Cache o el aviso de la imagen) o redesplegá.
+
+## Alternativa: la página de muestra en Render
+
+1. En Render: New > Web Service, conectá el mismo repositorio y elegí la rama con estos cambios.
+2. Region: Virginia (US East), cerca de Neon `us-east-1`.
+3. Build Command: `npm install && npm run build`. Start Command: `npm start`.
+4. Variables de entorno: las mismas de la muestra en Vercel (`DATABASE_URL` de la base `vecinos_demo`, `DEMO_MODE=1`, `NEXT_PUBLIC_SITE_URL`, `COMMUNITY_ORIGIN`). No cargues `COMMUNITY_TRUST_PROXY` salvo que confirmes que el proxy de Render reemplaza `X-Forwarded-For`.
+5. Después del primer deploy, cargá los datos con `npm run demo:seed` como en el paso 3.4.
+6. Los servicios gratuitos de Render se duermen sin visitas: la primera carga después de un rato tarda más.
