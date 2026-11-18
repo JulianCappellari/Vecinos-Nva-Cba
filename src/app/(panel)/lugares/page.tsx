@@ -1,6 +1,7 @@
 
 import { getLugarPaginacion } from "@/actions/lugar/get-lugar-paginacion";
 import { LugarGrid, Paginacion } from "@/components";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default async function LugaresPage({ searchParams }: Props) {
   });
   return (
     <div>
+      <PageHeader titulo="Lugares" subtitulo="Sitios de Nueva Córdoba para conocer, probar y volver." img="/capuchinos.jpg" />
       <LugarGrid lugares={lugares} totalPaginas={totalPaginas} />
     </div>
   );

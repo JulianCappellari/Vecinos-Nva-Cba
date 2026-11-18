@@ -1,32 +1,18 @@
-'use client'
-// components/AnimatedOnScroll.js
-import { useInView } from 'react-intersection-observer';
-import { ReactNode, useEffect, useState } from 'react';
+"use client";
+import { ReactNode } from "react";
+import { Reveal } from "./motion";
+import { TiltCard } from "./TiltCard";
 
 interface AnimatedOnScrollProps {
   children: ReactNode;
-  animationClass: string;
+  /** Se mantiene por compatibilidad: ahora la animación la hace GSAP ScrollTrigger */
+  animationClass?: string;
 }
 
-const AnimatedOnScroll = ({ children, animationClass }: AnimatedOnScrollProps) => {
-  const { ref, inView } = useInView({
-    triggerOnce: true,
-    threshold: 0.01,
-  });
-
-  const [animateClass, setAnimateClass] = useState('');
-
-  useEffect(() => {
-    if (inView) {
-      setAnimateClass(`animate__animated ${animationClass} animate__duration-8s`);
-    }
-  }, [inView, animationClass]);
-
-  return (
-    <div ref={ref} className={animateClass}>
-      {children}
-    </div>
-  );
-};
+const AnimatedOnScroll = ({ children }: AnimatedOnScrollProps) => (
+  <Reveal variant="pop" className="w-full flex justify-center">
+    <TiltCard className="w-full max-w-sm">{children}</TiltCard>
+  </Reveal>
+);
 
 export default AnimatedOnScroll;

@@ -1,0 +1,14 @@
+{
+  "name": "Vecinos de Nueva Córdoba",
+  "short_name": "Vecinos NC",
+  "description": "Ayudando a conectar la vecindad",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#eff8ff",
+  "theme_color": "#062b4b",
+  "icons": [
+    { "src": "/brand/la-esquina/iconos/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/brand/la-esquina/iconos/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/brand/la-esquina/iconos/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

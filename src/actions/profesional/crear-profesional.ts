@@ -3,7 +3,6 @@
 import { any, z } from "zod";
 import prisma from "@/lib/prisma";
 import { v2 as cloudinary } from "cloudinary";
-import { Profesional } from "@prisma/client";
 
 cloudinary.config(process.env.CLOUDINARY_URL ?? "");
 // console.log("Cloudinary configuración:", cloudinary.config());

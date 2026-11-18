@@ -1,116 +1,95 @@
-import { getLugarById } from "@/actions/lugar/get-lugar-by-id";
-import { MuestraLugar, MuestraLugarMobile } from "@/components";
 import Link from "next/link";
-
-import {
-  IoLogoFacebook,
-  IoLogoInstagram,
-  IoLogoLinkedin,
-  IoLogoTwitch,
-  IoLogoWebComponent,
-} from "react-icons/io5";
+import { notFound } from "next/navigation";
+import { IoLocationOutline, IoMapOutline, IoPricetagOutline } from "react-icons/io5";
+import { getLugarById } from "@/actions/lugar/get-lugar-by-id";
+import { Galeria } from "@/components/lugar/Galeria";
+import { Reveal, SplitHeading } from "@/components/ui/motion";
+import { SocialLinks } from "@/components/ui/SocialLinks";
+import { fontTitulo } from "@/config/fonts";
 
 interface Props {
-  params: {
-    id: string;
-  };
+  params: { id: string };
 }
 
 export default async function LugarPage({ params }: Props) {
-  const { id } = params;
-  const lugar = await getLugarById(id);
+  const lugar = await getLugarById(params.id);
+  if (!lugar) notFound();
 
-  // console.log(lugar?.localizacion)
-
-  // console.log(lugar);
+  const direccion = lugar.direccion
+    .map((d) => (d.altura ? `${d.calle} ${d.altura}` : d.calle))
+    .join(", ");
+  const mapa =
+    lugar.localizacion && lugar.localizacion !== "undefined" && lugar.localizacion.trim() !== ""
+      ? lugar.localizacion
+      : null;
 
   return (
-    <div className="mt-5 mb-20 grid grid-cols-1 md:grid-cols-3 gap-3 ">
-      <div className="col-span-1 md:col-span-2">
-        {/* Desktop */}
-        {lugar && (
-          <MuestraLugar
-            titulo={lugar.nombre}
-            imagenes={lugar.imagenes.map((imagen) => imagen.url)}
-            className="hidden md:block ml-6 mr-0"
+    <div className="overflow-x-clip">
+      <section className="bg-celeste-950 px-5 pb-10 pt-12 text-white sm:px-8 md:pb-14 md:pt-16">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-sky-200">{lugar.barrio}</p>
+          <SplitHeading
+            as="h1"
+            onLoad
+            text={lugar.nombre}
+            className={`${fontTitulo.className} mt-2 text-[clamp(2.5rem,8vw,6rem)] uppercase leading-none`}
           />
-        )}
+        </div>
+      </section>
 
-        {/* Mobile */}
-        {lugar && (
-          <MuestraLugarMobile
-            titulo={lugar.nombre}
-            imagenes={lugar.imagenes.map((imagen) => imagen.url)}
-            className="block md:hidden"
-          />
-        )}
-      </div>
-      <div className="p-6 sm:p-8 md:p-10 flex flex-col justify-center md:pb-[150px] md:mb-[120px] max-h-screen ">
-        <div className="bg-white p-5 rounded-lg shadow-lg">
-          <div>
-            <h1 className="text-2xl font-bold">{lugar?.nombre}</h1>
-            <p className="text-muted-foreground">{"En " + lugar?.barrio}</p>
-          </div>
-          <div className="grid grid-cols-2 gap-4 mt-6">
-            <div>
-              <p className="text-sm font-medium">Tipo</p>
-              <p>{lugar?.tipo.join(", ")}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium">Dirección</p>
-              {Array.isArray(lugar?.direccion) &&
-                lugar.direccion.map((direccion, index) => (
-                  <span key={index} className="">
-                    {direccion.calle}  {" "}
-                    {direccion.altura !== 0 && direccion.altura}
-                  </span>
-                ))}
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4 mt-4">
-            <div>
-              {lugar !== null &&
-                lugar.localizacion !== "undefined" &&
-                lugar.localizacion !== null &&
-                lugar.localizacion.trim() !== "" && (
-                  <div className="text-blue-500 hover:text-blue-700 mt-4 md:mt-2">
-                    <p className="text-sm font-medium text-black">Ubicación</p>
-                    <Link href={lugar.localizacion} className="">
-                      Ver en el mapa
-                    </Link>
-                  </div>
-                )}
-            </div>
-            <div>
-              <div className="flex gap-2">
-                {lugar?.redes && lugar.redes.length > 0 && (
-                  <div className="flex flex-row items-center mt-5">
-                    <h1 className="mr-3 font-bold">Redes sociales:</h1>
-                    {lugar?.redes.map((red, index) => (
-                      <Link href={red.url} key={index} passHref>
-                        {red.tipo === "Instagram" && (
-                          <IoLogoInstagram className="text-3xl md:text-4xl text-pink-500 hover:text-pink-700 cursor-pointer mr-2" />
-                        )}
-                        {red.tipo === "Twitter" && (
-                          <IoLogoTwitch className="text-3xl md:text-4xl text-purple-500 hover:text-purple-700 cursor-pointer mr-2" />
-                        )}
-                        {red.tipo === "Linkedin" && (
-                          <IoLogoLinkedin className="text-3xl md:text-4xl text-blue-500 hover:text-blue-700 cursor-pointer mr-2" />
-                        )}
-                        {red.tipo === "Facebook" && (
-                          <IoLogoFacebook className="text-3xl md:text-4xl text-blue-500 hover:text-blue-700 cursor-pointer mr-2" />
-                        )}
-                        {red.tipo === "Web" && (
-                          <IoLogoWebComponent className="text-3xl md:text-4xl text-gray-500 hover:text-gray-700 cursor-pointer mr-2" />
-                        )}
-                      </Link>
-                    ))}
-                  </div>
-                )}
+      <section className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-5 py-10 sm:px-8 lg:grid-cols-[1.6fr_1fr] lg:py-16">
+        <Reveal variant="left" className="min-w-0 lg:-mt-24">
+          <Galeria imagenes={lugar.imagenes.map((i) => i.url as string)} titulo={lugar.nombre} />
+        </Reveal>
+
+        <Reveal variant="right" className="min-w-0">
+          <div className="space-y-6 rounded-2xl bg-white p-6 shadow-xl sm:p-8">
+            <div className="flex gap-4">
+              <IoLocationOutline className="mt-1 h-6 w-6 shrink-0 text-sky-500" />
+              <div>
+                <h2 className="font-bold text-celeste-950">Dirección</h2>
+                <p className="text-gray-700">{direccion || "Sin dirección cargada"}</p>
               </div>
             </div>
+            {lugar.tipo.length > 0 && (
+              <div className="flex gap-4">
+                <IoPricetagOutline className="mt-1 h-6 w-6 shrink-0 text-sky-500" />
+                <div>
+                  <h2 className="font-bold text-celeste-950">Tipo de lugar</h2>
+                  <ul className="mt-2 flex flex-wrap gap-2">
+                    {lugar.tipo.map((t) => (
+                      <li key={t} className="rounded-full bg-celeste-100 px-3 py-1 text-sm text-celeste-800">
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+            {mapa && (
+              <Link
+                href={mapa}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 rounded-full bg-sol px-6 py-3 font-bold text-celeste-950 transition hover:-translate-y-0.5 hover:bg-celeste-950 hover:text-white"
+              >
+                <IoMapOutline className="h-5 w-5" /> Ver en el mapa
+              </Link>
+            )}
+            {lugar.redes && lugar.redes.length > 0 && (
+              <div>
+                <h2 className="mb-3 font-bold text-celeste-950">Redes</h2>
+                <SocialLinks redes={lugar.redes} />
+              </div>
+            )}
           </div>
-        </div>
+        </Reveal>
+      </section>
+
+      <div className="pb-16 text-center">
+        <Link href="/lugares" className="font-bold text-celeste-700 underline underline-offset-4 hover:text-celeste-950">
+          Volver a lugares
+        </Link>
       </div>
     </div>
   );

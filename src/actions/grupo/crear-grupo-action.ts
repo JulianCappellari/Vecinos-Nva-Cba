@@ -2,7 +2,7 @@
 
 import {z} from 'zod'
 import prisma from '@/lib/prisma'
-import { Grupo } from '@prisma/client'
+import type { Grupo } from '@/generated/prisma'
 import {v2 as cloudinary} from 'cloudinary';
 cloudinary.config(process.env.CLOUDINARY_URL ?? '')
 

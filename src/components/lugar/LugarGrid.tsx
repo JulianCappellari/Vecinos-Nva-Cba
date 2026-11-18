@@ -4,7 +4,6 @@ import { Lugar } from "@/interfaces";
 import { LugarCard, Paginacion } from "..";
 import AnimatedOnScroll from "../ui/AnimateScroll";
 import { LugarCard2 } from "./LugarCard2";
-import { LugarCard3 } from "./LugarCard3";
 
 interface Props {
   lugares: Lugar[];
@@ -28,29 +27,24 @@ export const LugarGrid = ({ lugares, totalPaginas }: Props) => {
   };
 
   return (
-    <div className="m-8 flex flex-col justify-center items-center">
+    <div className="mx-4 my-8 sm:m-8 flex flex-col justify-center items-center">
       {/* Campo de búsqueda */}
       <input
         type="text"
         placeholder="Buscar lugar..."
         value={searchText}
         onChange={handleSearchChange}
-        className="p-2 border rounded-md bg-gray-200 mb-10"
+        className="w-full max-w-md p-3 border rounded-full px-5 bg-white shadow mb-12"
       />
 
       {/* Lista de lugares filtrados */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 mx-auto">
+      <div className="grid w-full max-w-7xl grid-cols-1 justify-items-center gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredLugares.map((lugar) => (
           <AnimatedOnScroll
             key={lugar.nombre + lugar.barrio}
             animationClass="animate__fadeInUp"
           >
-            <div className="block md:hidden">
-              <LugarCard lugar={lugar} />
-            </div>
-            <div className="hidden md:block">
-              <LugarCard3 lugar={lugar} />
-            </div>
+            <LugarCard lugar={lugar} />
           </AnimatedOnScroll>
         ))}
       </div>

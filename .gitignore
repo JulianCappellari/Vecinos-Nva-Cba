@@ -11,6 +11,7 @@
 
 # next.js
 /.next/
+/.next-*/
 /out/
 
 # production
@@ -36,3 +37,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local community test database, logs and browser artifacts
+/.local/
+/test-results/
+/src/generated/prisma/

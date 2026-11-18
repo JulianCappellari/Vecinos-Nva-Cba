@@ -1,5 +1,7 @@
  
  
+Documentación de las seis funciones estudiantiles, configuración y moderación: [COMUNIDAD.md](COMUNIDAD.md).
+
 Listo:
 - Pantalla individual de lugar 
 - Pantalla individual de profesional

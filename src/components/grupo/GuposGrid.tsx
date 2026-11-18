@@ -26,18 +26,18 @@ export const GrupoGrid = ({ grupos, totalPaginas }: Props) => {
     setIsSearching(value.length > 0);
   };
   return (
-    <div className="m-8 flex flex-col justify-center items-center">
+    <div className="mx-4 my-8 sm:m-8 flex flex-col justify-center items-center">
       {/* Campo de búsqueda */}
       <input
         type="text"
         placeholder="Buscar grupo..."
         value={searchText}
         onChange={handleSearchChange}
-        className="p-2 border rounded-md bg-gray-200 mb-10"
+        className="w-full max-w-md p-3 border rounded-full px-5 bg-white shadow mb-12"
       />
 
       {/* Lista de grupos filtrados */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 ">
+      <div className="grid w-full max-w-7xl grid-cols-1 justify-items-center gap-x-10 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
         {filteredGrupos.map((grupo) => (
           <AnimatedOnScroll key={grupo.url} animationClass="animate__fadeInUp">
 

@@ -6,11 +6,145 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+enum CommunityRole {
+  MEMBER
+  ADMIN
+}
+
+enum CommunityKind {
+  PLAN
+  STUDY
+  BENEFIT
+  GROUP
+  EXCHANGE
+}
+
+enum CommunityStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CLOSED
+}
+
+model CommunityUser {
+  id             String                   @id @default(cuid())
+  email          String                   @unique
+  name           String
+  passwordHash   String
+  province       String?
+  role           CommunityRole            @default(MEMBER)
+  createdAt      DateTime                 @default(now())
+  sessions       CommunitySession[]
+  posts          CommunityPost[]
+  participations CommunityParticipation[]
+  reports        CommunityReport[]
+  reviews        CommunityReview[]
+  assets         CommunityAsset[]
+}
+
+model CommunitySession {
+  tokenHash String        @id
+  userId    String
+  expiresAt DateTime
+  user      CommunityUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model CommunityPost {
+  id            String                   @id @default(cuid())
+  kind          CommunityKind
+  title         String
+  description   String
+  category      String
+  searchText    String                   @default("")
+  university    String?
+  career        String?
+  subject       String?
+  province      String?
+  cost          Int?
+  eventAt       DateTime?
+  submissionKey String                   @unique
+  data          Json
+  contact       String
+  authorId      String
+  status        CommunityStatus          @default(PENDING)
+  reviewNote    String?
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+  expiresAt     DateTime
+  imageId       String?                  @unique
+  image         CommunityAsset?          @relation(fields: [imageId], references: [id])
+  author        CommunityUser            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  participants  CommunityParticipation[]
+  reports       CommunityReport[]
+  reviews       CommunityReview[]
+
+  @@index([kind, status, expiresAt])
+  @@index([authorId, createdAt])
+}
+
+model CommunityParticipation {
+  postId    String
+  userId    String
+  createdAt DateTime      @default(now())
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      CommunityUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([postId, userId])
+  @@index([userId])
+}
+
+model CommunityReport {
+  id         String        @id @default(cuid())
+  postId     String
+  userId     String
+  reason     String
+  resolvedAt DateTime?
+  createdAt  DateTime      @default(now())
+  post       CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user       CommunityUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([resolvedAt])
+}
+
+model CommunityReview {
+  id         String          @id @default(cuid())
+  postId     String
+  reviewerId String
+  decision   CommunityStatus
+  note       String
+  createdAt  DateTime        @default(now())
+  post       CommunityPost   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  reviewer   CommunityUser   @relation(fields: [reviewerId], references: [id])
+}
+
+model CommunityAsset {
+  id        String         @id @default(cuid())
+  ownerId   String
+  publicId  String         @unique
+  url       String
+  createdAt DateTime       @default(now())
+  owner     CommunityUser  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  post      CommunityPost?
+}
+
+model CommunityRateLimit {
+  key       String   @id
+  attempts  Int      @default(1)
+  expiresAt DateTime
+
+  @@index([expiresAt])
 }
 
 enum Redes {
@@ -47,7 +181,7 @@ model Lugar {
   tipo         String[]
   imagenes     Imagen[]
   redes        RedSocial[]
-  localizacion String? 
+  localizacion String?
 
   direccion Direccion[]
 }

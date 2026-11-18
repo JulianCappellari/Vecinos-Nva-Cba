@@ -1,0 +1,19 @@
+{
+  "name": "La esquina / Vecinos de Nueva Córdoba",
+  "colors": {
+    "azul-barrio": "#062b4b",
+    "celeste": "#069af1",
+    "amarillo-encuentro": "#ffc93c",
+    "hielo": "#eff8ff",
+    "papel": "#fffaf2",
+    "blanco": "#ffffff",
+    "negro": "#000000"
+  },
+  "font": {
+    "family": "Manrope",
+    "logoWeight": 800,
+    "descriptorWeight": 600,
+    "license": "SIL Open Font License 1.1",
+    "source": "https://github.com/google/fonts/tree/main/ofl/manrope"
+  }
+}
