@@ -15,12 +15,15 @@ import { RedesSociales } from "@/components/nosotros/RedesSociales";
 import { Reveal, SplitHeading } from "@/components/ui/motion";
 import { TiltCard } from "@/components/ui/TiltCard";
 import { fontTitulo } from "@/config/fonts";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata = {
-  title: "Sobre nosotros",
+export const metadata = pageMeta({
+  title: "Sobre nosotros: vecinos de Nueva Córdoba",
   description:
     "Somos vecinos de Nueva Córdoba. Reunimos grupos, profesionales y lugares del barrio, y una comunidad para quienes llegan a estudiar.",
-};
+  path: "/nosotros",
+  image: "/hero-avenida.jpg",
+});
 
 const SECCIONES = [
   {

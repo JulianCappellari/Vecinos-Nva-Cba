@@ -13,6 +13,14 @@ import { Magnetic } from "@/components/ui/Magnetic";
 import { HomeHero } from "@/components/home/HomeHero";
 import { Pillars } from "@/components/home/Pillars";
 import { Marquee, Parallax, Reveal, SplitHeading } from "@/components/ui/motion";
+import type { Metadata } from "next";
+import { DEFAULT_DESCRIPTION, SITE_NAME } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  title: { absolute: `${SITE_NAME} | Grupos, profesionales y lugares` },
+  description: DEFAULT_DESCRIPTION,
+  alternates: { canonical: "/" },
+};
 
 // La portada lee la base en cada visita: sin esto Next la congela con los datos del momento del build.
 export const dynamic = "force-dynamic";

@@ -69,3 +69,17 @@ Un solo código, dos sitios en Vercel. Cada uno tiene su propia base de datos en
 4. Variables de entorno: las mismas de la muestra en Vercel (`DATABASE_URL` de la base `vecinos_demo`, `DEMO_MODE=1`, `NEXT_PUBLIC_SITE_URL`, `COMMUNITY_ORIGIN`). No cargues `COMMUNITY_TRUST_PROXY` salvo que confirmes que el proxy de Render reemplaza `X-Forwarded-For`.
 5. Después del primer deploy, cargá los datos con `npm run demo:seed` como en el paso 3.4.
 6. Los servicios gratuitos de Render se duermen sin visitas: la primera carga después de un rato tarda más.
+
+## Que aparezca en Google (SEO)
+
+El código ya genera lo que Google necesita: títulos y descripciones propios por página, direcciones canónicas, `robots.txt`, `sitemap.xml`, datos estructurados (sitio, organización, lugares, profesionales y migas de pan) e imágenes al compartir. Falta lo que depende de vos:
+
+1. **Dirección real en la página real.** En Vercel, proyecto real, definí `NEXT_PUBLIC_SITE_URL` con la dirección final y sin barra (por ejemplo `https://vecinosnuevacordoba.com.ar`). Todas las direcciones canónicas y el mapa del sitio salen de ahí. Si queda sin definir, Google vería `localhost`.
+2. **Google Search Console** (search.google.com/search-console):
+   - Agregá la propiedad con tu dirección.
+   - Para verificarla con una etiqueta, copiá el código que te da Google en la variable `GOOGLE_SITE_VERIFICATION` de Vercel y redesplegá.
+   - Entrá a "Sitemaps" y enviá `https://TU-DIRECCION/sitemap.xml`.
+   - En "Inspección de URL" pedí la indexación de la portada.
+3. **La muestra no se indexa a propósito**: con `DEMO_MODE=1` el sitio responde `noindex` y `robots.txt` bloquea todo.
+4. **Contenido.** Google premia páginas con contenido propio y útil. Mientras la base real tenga pocos grupos, profesionales y lugares, el sitio va a posicionar poco: cada ficha cargada es una página nueva que puede aparecer en las búsquedas.
+5. **Enlaces externos.** Conviene que el Instagram y el X del proyecto, y cualquier otro sitio del barrio, enlacen a la página.

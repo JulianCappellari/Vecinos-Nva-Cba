@@ -6,9 +6,32 @@ import { Galeria } from "@/components/lugar/Galeria";
 import { Reveal, SplitHeading } from "@/components/ui/motion";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { fontTitulo } from "@/config/fonts";
+import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { abs, breadcrumbs, clip, pageMeta } from "@/lib/seo";
 
 interface Props {
   params: { id: string };
+}
+
+const direccionDe = (direccion: { calle: string; altura: number | null }[]) =>
+  direccion.map((d) => (d.altura ? `${d.calle} ${d.altura}` : d.calle)).join(", ");
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const lugar = await getLugarById(params.id);
+  if (!lugar) return { title: "Lugar no encontrado", robots: { index: false, follow: true } };
+  const dirCruda = direccionDe(lugar.direccion);
+  // Algunos lugares guardan solo "S/N -": no sirve como dirección en el resultado de búsqueda.
+  const dir = dirCruda.replace(/S\/N|[-\s]/gi, "").length > 2 ? dirCruda : "";
+  const tipos = lugar.tipo.slice(0, 3).join(", ");
+  return pageMeta({
+    title: `${lugar.nombre} en ${lugar.barrio}`,
+    description: clip(
+      `${lugar.nombre}${tipos ? ` (${tipos})` : ""} en ${lugar.barrio}, Córdoba.${dir ? ` Dirección: ${dir}.` : ""} Fotos, ubicación y redes del lugar.`
+    ),
+    path: `/lugar/${lugar.id}`,
+    image: (lugar.imagenes[0]?.url as string | undefined) || undefined,
+  });
 }
 
 export default async function LugarPage({ params }: Props) {
@@ -23,8 +46,35 @@ export default async function LugarPage({ params }: Props) {
       ? lugar.localizacion
       : null;
 
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Place",
+      "@id": abs(`/lugar/${lugar.id}`),
+      name: lugar.nombre,
+      url: abs(`/lugar/${lugar.id}`),
+      keywords: lugar.tipo.join(", "),
+      image: lugar.imagenes.map((i) => abs(i.url as string)),
+      address: {
+        "@type": "PostalAddress",
+        ...(direccion ? { streetAddress: direccion } : {}),
+        addressLocality: "Córdoba",
+        addressRegion: "Córdoba",
+        addressCountry: "AR",
+      },
+      ...(mapa ? { hasMap: mapa } : {}),
+      ...(lugar.redes && lugar.redes.length ? { sameAs: lugar.redes.map((r) => r.url) } : {}),
+    },
+    breadcrumbs([
+      { name: "Inicio", path: "/" },
+      { name: "Lugares", path: "/lugares" },
+      { name: lugar.nombre, path: `/lugar/${lugar.id}` },
+    ]),
+  ];
+
   return (
     <div className="overflow-x-clip">
+      <JsonLd data={jsonLd} />
       <section className="bg-celeste-950 px-5 pb-10 pt-12 text-white sm:px-8 md:pb-14 md:pt-16">
         <div className="mx-auto max-w-6xl">
           <p className="text-sky-200">{lugar.barrio}</p>

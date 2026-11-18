@@ -14,10 +14,19 @@ import { fontTitulo } from "@/config/fonts";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { Parallax, Reveal, SplitHeading } from "@/components/ui/motion";
 import { TiltCard } from "@/components/ui/TiltCard";
+import { pageMeta } from "@/lib/seo";
 
 const ICONS = [IoPeopleOutline, IoBookOutline, IoCompassOutline, IoPricetagOutline, IoHeartOutline, IoSwapHorizontalOutline];
 // Filas de 3 columnas: 2+1, 1+2, 1+2
 const SPANS = ["lg:col-span-2", "", "", "lg:col-span-2", "", "lg:col-span-2"];
+
+export const metadata = pageMeta({
+  title: "Comunidad estudiantil en Nueva Córdoba",
+  description:
+    "Planes para conocer gente, mesas de estudio, guía para recién llegados, beneficios con poca plata y avisos entre estudiantes en Nueva Córdoba, Córdoba.",
+  path: "/comunidad",
+  image: "/esquina-atardecer.jpg",
+});
 
 export default function CommunityPage() {
   return (

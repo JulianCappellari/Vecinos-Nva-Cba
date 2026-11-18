@@ -4,15 +4,22 @@ import { Paginacion, ProfesionalGrid } from "@/components";
 
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Profesionales",
-  description: "Profesionales a los cuales puedes contactar segun lo que necesites",
-};
 interface Props {
   searchParams: {
     page?: string
   }
+}
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const n = Number(searchParams.page) > 1 ? Math.floor(Number(searchParams.page)) : 1;
+  return pageMeta({
+    title: n > 1 ? `Profesionales y oficios en Nueva Córdoba (página ${n})` : "Profesionales y oficios en Nueva Córdoba",
+    description: "Directorio de profesionales y oficios de Nueva Córdoba, Córdoba, con contacto por WhatsApp y redes. Encontrá quién te ayude cerca de casa.",
+    path: n > 1 ? `/profesionales?page=${n}` : "/profesionales",
+    image: "/panoramica-dorada.jpg",
+  });
 }
 
 export default async function ProfesionalesPage({searchParams}: Props) {

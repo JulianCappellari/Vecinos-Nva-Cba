@@ -6,9 +6,26 @@ import { Galeria } from "@/components/lugar/Galeria";
 import { Reveal, SplitHeading } from "@/components/ui/motion";
 import { SocialLinks } from "@/components/ui/SocialLinks";
 import { fontTitulo } from "@/config/fonts";
+import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { abs, breadcrumbs, clip, pageMeta } from "@/lib/seo";
 
 interface Props {
   params: { nombreApellido: string };
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const p = await getProfesionalConNombre(decodeURIComponent(params.nombreApellido));
+  if (!p) return { title: "Profesional no encontrado", robots: { index: false, follow: true } };
+  const oficio = p.trabajo.join(", ");
+  return pageMeta({
+    title: `${p.nombre} ${p.apellido}${oficio ? `, ${oficio}` : ""} en Nueva Córdoba`,
+    description: clip(
+      `${p.nombre} ${p.apellido}${oficio ? `, ${oficio}` : ""} en Nueva Córdoba. Contactalo por WhatsApp o por sus redes desde el directorio de vecinos.`
+    ),
+    path: `/profesional/${encodeURIComponent(`${p.nombre}-${p.apellido}`)}`,
+    image: (p.imagen[0]?.url as string | undefined) || undefined,
+  });
 }
 
 export default async function ProfesionalPage({ params }: Props) {
@@ -18,8 +35,29 @@ export default async function ProfesionalPage({ params }: Props) {
   const soloDigitos = profesional.numero.replace(/\D/g, "");
   const nombreCompleto = `${profesional.nombre} ${profesional.apellido}`;
 
+  const ruta = `/profesional/${encodeURIComponent(`${profesional.nombre}-${profesional.apellido}`)}`;
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "@id": abs(ruta),
+      name: nombreCompleto,
+      url: abs(ruta),
+      jobTitle: profesional.trabajo.join(", "),
+      image: profesional.imagen.map((i: { url: string }) => abs(i.url)),
+      workLocation: { "@type": "Place", name: "Nueva Córdoba, Córdoba, Argentina" },
+      ...(profesional.redesSociales.length ? { sameAs: profesional.redesSociales.map((r: { url: string }) => r.url) } : {}),
+    },
+    breadcrumbs([
+      { name: "Inicio", path: "/" },
+      { name: "Profesionales", path: "/profesionales" },
+      { name: nombreCompleto, path: ruta },
+    ]),
+  ];
+
   return (
     <div className="overflow-x-clip">
+      <JsonLd data={jsonLd} />
       <section className="bg-celeste-950 px-5 pb-10 pt-12 text-white sm:px-8 md:pb-14 md:pt-16">
         <div className="mx-auto max-w-6xl">
           <ul className="mb-3 flex flex-wrap gap-2">
