@@ -128,10 +128,12 @@ export const TopMenu = () => {
 
       <div
         id="menu-movil"
-        className={`aurora fixed inset-x-0 top-16 h-[calc(100svh-4rem)] overflow-y-auto bg-celeste-950 transition-all duration-300 lg:hidden ${
+        className={`fixed inset-x-0 top-16 h-[calc(100svh-4rem)] overflow-y-auto bg-celeste-950 transition-all duration-300 lg:hidden ${
           showMenu ? "visible opacity-100" : "invisible opacity-0"
         }`}
       >
+        {/* El fondo animado va en un contenedor interno: .aurora fija position: relative y rompería el "fixed" del panel. */}
+        <div className="aurora min-h-full">
         <ul className="mx-auto flex max-w-md flex-col gap-3 p-5 pb-10">
           {[{ href: "/", label: "Inicio", icon: IoHomeOutline }, ...LINKS].map((l, i) => {
             const on = l.href === "/" ? pathname === "/" : activo(l.href);
@@ -170,6 +172,7 @@ export const TopMenu = () => {
             </Link>
           </li>
         </ul>
+        </div>
       </div>
     </header>
   );
